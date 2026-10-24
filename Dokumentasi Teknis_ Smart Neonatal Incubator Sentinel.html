@@ -1,0 +1,1301 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name=claude:viewport-fit-sides content=cover><style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-right:env(safe-area-inset-right,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}</style><style>.md-table{overflow-x:auto}@media print{.md-table{overflow-x:visible}}</style><style>:root{color-scheme:light dark;--md-bg:#fff;--md-text:rgba(0,0,0,.8);--md-muted:rgba(0,0,0,.6);--md-fill:rgba(0,0,0,.04);--md-fill-strong:rgba(0,0,0,.06);--md-rule:rgba(0,0,0,.1);--md-rule-strong:rgba(0,0,0,.16);--md-link:hsl(210 100% 45%)}@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){--md-bg:#0d0d0d;--md-text:rgba(255,255,255,.85);--md-muted:rgba(255,255,255,.6);--md-fill:rgba(255,255,255,.06);--md-fill-strong:rgba(255,255,255,.09);--md-rule:rgba(255,255,255,.14);--md-rule-strong:rgba(255,255,255,.22);--md-link:hsl(210 100% 72%)}}:root[data-theme="dark"]{color-scheme:dark;--md-bg:#0d0d0d;--md-text:rgba(255,255,255,.85);--md-muted:rgba(255,255,255,.6);--md-fill:rgba(255,255,255,.06);--md-fill-strong:rgba(255,255,255,.09);--md-rule:rgba(255,255,255,.14);--md-rule-strong:rgba(255,255,255,.22);--md-link:hsl(210 100% 72%)}:root[data-theme="light"]{color-scheme:light}@media print{:root,:root[data-theme="dark"]{color-scheme:light;--md-bg:#fff;--md-text:rgba(0,0,0,.8);--md-muted:rgba(0,0,0,.6);--md-fill:rgba(0,0,0,.04);--md-fill-strong:rgba(0,0,0,.06);--md-rule:rgba(0,0,0,.1);--md-rule-strong:rgba(0,0,0,.16);--md-link:hsl(210 100% 45%)}}body{background:var(--md-bg);color:var(--md-text);max-width:720px;margin:0 auto;padding:32px;display:flex;flex-direction:column;gap:10px;font:14px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro','Segoe UI',sans-serif;overflow-wrap:break-word}body>:first-child{margin-top:0}h1,h2,h3,h4,h5,h6{margin:6px 0 0;line-height:1.25;font-weight:600;text-wrap:balance}h1{font-size:1.35em}h2{font-size:1.15em;color:var(--md-muted)}h3,h4,h5,h6{font-size:1em}p,ul,ol,blockquote,table,pre,hr{margin:0}strong{font-weight:600}a{color:var(--md-link);text-decoration:none}a:hover{text-decoration:underline}ul,ol{display:flex;flex-direction:column;gap:6px;padding-left:22px}ul{list-style:disc}ol{list-style:decimal}:is(li,td,th)>*+:is(p,ul,ol,blockquote){margin-top:6px}blockquote{display:flex;flex-direction:column;gap:10px;border-left:2px solid var(--md-rule);padding-left:10px;color:var(--md-muted)}:not(pre)>code{background:var(--md-fill);padding:1px 3px;border-radius:4px;font:.92em 'SF Mono',ui-monospace,Menlo,Consolas,monospace}a>code{background:none;color:inherit}pre{background:var(--md-fill);padding:10px 12px;border-radius:6px;overflow-x:auto;font:12px/1.5 'SF Mono',ui-monospace,Menlo,Consolas,monospace;margin-block:4px}pre code{background:none;padding:0;font:inherit}table{width:100%;border-collapse:separate;border-spacing:2px;font:inherit}th,td{padding:6px 8px;border-radius:3px;text-align:left;vertical-align:top}th{background:var(--md-fill-strong);font-weight:600}td{background:var(--md-fill)}:is(th,td) :not(pre)>code{background:transparent}hr{border:0;border-top:1px solid var(--md-rule-strong);margin-block:10px}img{max-width:100%;height:auto;border-radius:4px}</style>
+</head><body>
+<h1>SMART NEONATAL INCUBATOR SENTINEL</h1>
+<p><strong>Dokumentasi Teknis Sistem Tertanam Berbasis Raspberry Pi 5</strong>
+<em>Mata Kuliah: Sistem Tertanam (INF214) · Universitas Sanata Dharma</em>
+<em>Versi dokumen: 2.0 (sesuai kode <code>app.py</code> v2 dan <code>templates/index.html</code> v2)</em></p>
+<hr>
+<h2>DAFTAR ISI</h2>
+<ol>
+<li><a href="#1-ringkasan">Ringkasan</a></li>
+<li><a href="#2-aturan-operasional">Aturan Operasional</a></li>
+<li><a href="#3-arsitektur-sistem">Arsitektur Sistem</a></li>
+<li><a href="#4-perangkat-keras-dan-wiring">Perangkat Keras dan Wiring</a></li>
+<li><a href="#5-finite-state-machine-fsm">Finite State Machine (FSM)</a></li>
+<li><a href="#6-konfigurasi">Konfigurasi</a></li>
+<li><a href="#7-perangkat-lunak-struktur-dan-alur">Perangkat Lunak: Struktur dan Alur</a></li>
+<li><a href="#8-rest-api">REST API</a></li>
+<li><a href="#9-antarmuka-web-dashboard">Antarmuka Web (Dashboard)</a></li>
+<li><a href="#10-instalasi-dan-menjalankan">Instalasi dan Menjalankan</a></li>
+<li><a href="#11-pengujian-dan-diagnosis">Pengujian dan Diagnosis</a></li>
+<li><a href="#12-troubleshooting">Troubleshooting</a></li>
+<li><a href="#13-keterbatasan-dan-catatan-keselamatan">Keterbatasan dan Catatan Keselamatan</a></li>
+<li><a href="#14-riwayat-perubahan">Riwayat Perubahan</a></li>
+</ol>
+<hr>
+<h2>1. Ringkasan</h2>
+<p><strong>Smart Neonatal Incubator Sentinel</strong> adalah prototipe sistem pemantauan inkubator bayi (neonatus) berbasis Raspberry Pi 5. Sistem membaca suhu dan kelembapan (DHT11), gerakan bayi (PIR HC-SR501), dan suara/tangisan (modul suara LM393), lalu menampilkannya di dashboard web untuk perawat dan mengendalikan indikator serta buzzer di boks inkubator.</p>
+<p>Tiga prinsip utama desain:</p>
+<ol>
+<li><strong>Alarm suhu dan kelembapan hening di boks.</strong> LED merah berkedip, tetapi buzzer boks tidak berbunyi agar bayi tidak terpapar bising. Peringatan suara hanya muncul di perangkat perawat melalui Web Audio API.</li>
+<li><strong>Pemeriksaan inaktivitas.</strong> Jika PIR tidak mendeteksi gerakan selama 2 menit, buzzer boks berbunyi untuk memastikan kondisi bayi dan membangunkannya. Buzzer yang sama dipakai untuk membangunkan bayi pada jadwal menyusu.</li>
+<li><strong>Bukti kehadiran fisik (<em>physical proof-of-presence</em>).</strong> Buzzer boks hanya dapat dimatikan dengan menahan tombol fisik di inkubator. Tidak ada perintah mute dari web.</li>
+</ol>
+<blockquote>
+<p><strong>Catatan penting:</strong> sistem ini adalah <strong>prototipe edukasi</strong>, bukan perangkat medis. PIR hanya mendeteksi <em>gerakan</em>, bukan napas, sehingga fitur ini disebut <em>pemeriksaan inaktivitas</em>, bukan deteksi apnea.</p>
+</blockquote>
+<hr>
+<h2>2. Aturan Operasional</h2>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">No</th>
+<th style="text-align:left">Aturan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">Status aman: <strong>LED hijau menyala tetap</strong>, LED merah dan buzzer mati.</td>
+</tr>
+<tr>
+<td style="text-align:left">2</td>
+<td style="text-align:left">Semua peringatan: <strong>LED hijau mati, LED merah berkedip cepat</strong>.</td>
+</tr>
+<tr>
+<td style="text-align:left">3</td>
+<td style="text-align:left">Suhu atau kelembapan di luar batas → LED merah berkedip, <strong>buzzer boks hening</strong>, alarm bunyi hanya di web (jika Audio Monitor aktif).</td>
+</tr>
+<tr>
+<td style="text-align:left">4</td>
+<td style="text-align:left">Tidak ada gerak ≥ 120 detik, perintah &quot;Bangunkan Bayi&quot;, atau CODE BLUE → <strong>buzzer boks berbunyi</strong>.</td>
+</tr>
+<tr>
+<td style="text-align:left">5</td>
+<td style="text-align:left">Buzzer boks hanya mati dengan <strong>menahan tombol fisik ≥ 0,5 detik</strong>. Web tidak dapat mematikannya.</td>
+</tr>
+<tr>
+<td style="text-align:left">6</td>
+<td style="text-align:left">Ambang suhu dan kelembapan bersifat <strong>default tetap</strong> (tidak dapat diubah dari dashboard).</td>
+</tr>
+<tr>
+<td style="text-align:left">7</td>
+<td style="text-align:left">Audio Monitor di web dapat dinyalakan/dimatikan; bunyi hanya muncul saat ada peringatan, berulang dengan jeda.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Nilai default ambang:</p>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">Besaran</th>
+<th style="text-align:center">Batas bawah</th>
+<th style="text-align:center">Batas atas</th>
+<th style="text-align:center">Histeresis</th>
+<th style="text-align:left">Alarm padam bila</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Suhu</td>
+<td style="text-align:center">31,0 °C</td>
+<td style="text-align:center">34,0 °C</td>
+<td style="text-align:center">1,0 °C</td>
+<td style="text-align:left">32,0 ≤ T ≤ 33,0 °C</td>
+</tr>
+<tr>
+<td style="text-align:left">Kelembapan</td>
+<td style="text-align:center">50 %</td>
+<td style="text-align:center">80 %</td>
+<td style="text-align:center">5 %</td>
+<td style="text-align:left">55 ≤ RH ≤ 75 %</td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>Nilai ini adalah default prototipe, <strong>bukan rekomendasi klinis</strong>. Rentang suhu inkubator sebenarnya bergantung pada usia gestasi dan berat bayi.</p>
+</blockquote>
+<hr>
+<h2>3. Arsitektur Sistem</h2>
+<h3>3.1 Diagram Blok</h3>
+<pre><code class="language-text"> SENSOR (INPUT)                    PROSES (RASPBERRY PI 5)                     OUTPUT
+┌─────────────────┐        ┌────────────────────────────────────┐        ┌──────────────────┐
+│ DHT11 (GPIO4)   │──────▶ │  Hardware Engine (thread, 10 Hz)   │──────▶ │ LED Hijau GPIO25 │
+│ suhu, kelembapan│        │   - baca sensor                    │        │ LED Merah GPIO24 │
+├─────────────────┤        │   - evaluasi histeresis &amp; timer    │        │ Buzzer    GPIO23 │
+│ PIR (GPIO17)    │──────▶ │   - resolusi status FSM            │        └──────────────────┘
+│ gerak           │        │   - terapkan pola aktuator         │
+├─────────────────┤        │                                    │        ┌──────────────────┐
+│ Sensor suara    │──────▶ │  Flask Web Server (thread)         │◀─────▶ │ Dashboard Web    │
+│ LM393 (GPIO22)  │        │   - GET  /api/status               │  HTTP  │ (HP/laptop       │
+├─────────────────┤        │   - POST /api/control              │  JSON  │  perawat)        │
+│ Tombol (GPIO27) │──────▶ │   - GET  /  (index.html)           │        │ + Web Audio API  │
+│ konfirmasi fisik│        └────────────────────────────────────┘        └──────────────────┘
+└─────────────────┘
+</code></pre>
+<h3>3.2 Model Eksekusi</h3>
+<ul>
+<li><strong>Thread <code>hardware-engine</code>:</strong> loop setiap 0,1 detik. DHT11 dibaca tiap 2 detik (batas sampling sensor). PIR dan sensor suara dibaca tiap siklus.</li>
+<li><strong>Thread Flask:</strong> melayani HTTP (<code>threaded=True</code>). Dashboard polling <code>/api/status</code> tiap 1 detik.</li>
+<li><strong>Callback GPIO (gpiozero):</strong> tombol (<code>when_held</code>), PIR dan sensor suara (<code>when_activated</code>) berjalan di thread gpiozero.</li>
+<li><strong>Sinkronisasi:</strong> seluruh state bersama dilindungi satu <code>threading.RLock</code>. Waktu memakai <code>time.monotonic()</code> agar kebal terhadap perubahan jam sistem.</li>
+<li><strong>Aktuator hanya diubah saat status berganti</strong> (<code>_applied_state</code>), sehingga pola kedip tidak ter-reset tiap siklus.</li>
+</ul>
+<hr>
+<h2>4. Perangkat Keras dan Wiring</h2>
+<h3>4.1 Daftar Komponen</h3>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">Komponen</th>
+<th style="text-align:center">Jumlah</th>
+<th style="text-align:left">Fungsi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Raspberry Pi 5 (+ catu daya resmi, microSD)</td>
+<td style="text-align:center">1</td>
+<td style="text-align:left">Pengendali utama dan web server</td>
+</tr>
+<tr>
+<td style="text-align:left">Sensor DHT11 (modul 3-pin atau sensor + resistor pull-up 4,7 kΩ)</td>
+<td style="text-align:center">1</td>
+<td style="text-align:left">Suhu dan kelembapan</td>
+</tr>
+<tr>
+<td style="text-align:left">PIR HC-SR501</td>
+<td style="text-align:center">1</td>
+<td style="text-align:left">Deteksi gerakan</td>
+</tr>
+<tr>
+<td style="text-align:left">Modul sensor suara LM393</td>
+<td style="text-align:center">1</td>
+<td style="text-align:left">Deteksi suara/tangisan</td>
+</tr>
+<tr>
+<td style="text-align:left">Push button</td>
+<td style="text-align:center">1</td>
+<td style="text-align:left">Konfirmasi kehadiran perawat</td>
+</tr>
+<tr>
+<td style="text-align:left">Active buzzer (modul)</td>
+<td style="text-align:center">1</td>
+<td style="text-align:left">Stimulasi/pemeriksaan di boks</td>
+</tr>
+<tr>
+<td style="text-align:left">LED merah, LED hijau</td>
+<td style="text-align:center">1 + 1</td>
+<td style="text-align:left">Indikator status</td>
+</tr>
+<tr>
+<td style="text-align:left">Resistor 330 Ω</td>
+<td style="text-align:center">2</td>
+<td style="text-align:left">Pembatas arus LED</td>
+</tr>
+<tr>
+<td style="text-align:left">Breadboard dan kabel jumper</td>
+<td style="text-align:center">–</td>
+<td style="text-align:left">Perakitan</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>4.2 Alokasi Pin (penomoran BCM, sesuai <code>Config</code> bawaan)</h3>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">Perangkat</th>
+<th style="text-align:left">Pin modul</th>
+<th style="text-align:center">Pin fisik</th>
+<th style="text-align:center">Pin BCM</th>
+<th style="text-align:left">Keterangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>DHT11</strong></td>
+<td style="text-align:left">VCC</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">3,3 V</td>
+<td style="text-align:left">Gunakan 3,3 V</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">DATA</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">GPIO4</td>
+<td style="text-align:left">1-wire; pull-up 4,7 kΩ ke 3,3 V (sudah ada di modul 3-pin)</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">GND</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">GND</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>PIR HC-SR501</strong></td>
+<td style="text-align:left">VCC</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">5 V</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">OUT</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">GPIO17</td>
+<td style="text-align:left">Output 3,3 V, aman untuk GPIO</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">GND</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">GND</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Sensor suara</strong></td>
+<td style="text-align:left">VCC</td>
+<td style="text-align:center">1 atau 17 (rel 3,3 V)</td>
+<td style="text-align:center">3,3 V</td>
+<td style="text-align:left"><strong>Disarankan 3,3 V</strong>, lihat catatan di bawah</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">DO</td>
+<td style="text-align:center">15</td>
+<td style="text-align:center">GPIO22</td>
+<td style="text-align:left">Output digital komparator</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">GND</td>
+<td style="text-align:center">14</td>
+<td style="text-align:center">GND</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Push button</strong></td>
+<td style="text-align:left">Kaki 1</td>
+<td style="text-align:center">13</td>
+<td style="text-align:center">GPIO27</td>
+<td style="text-align:left">Input dengan pull-up internal</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">Kaki 2</td>
+<td style="text-align:center">20</td>
+<td style="text-align:center">GND</td>
+<td style="text-align:left">Menutup ke GND saat ditekan</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Active buzzer</strong></td>
+<td style="text-align:left">VCC</td>
+<td style="text-align:center">17 (rel 3,3 V)</td>
+<td style="text-align:center">3,3 V</td>
+<td style="text-align:left">Naikkan ke 5 V (Pin 2/4) jika bunyi terlalu lemah</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">I/O (SIG)</td>
+<td style="text-align:center">16</td>
+<td style="text-align:center">GPIO23</td>
+<td style="text-align:left">HIGH = bunyi (jika modul <em>active-high</em>)</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">GND</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">GND</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>LED merah</strong></td>
+<td style="text-align:left">Anoda (+)</td>
+<td style="text-align:center">18</td>
+<td style="text-align:center">GPIO24</td>
+<td style="text-align:left">Seri resistor 330 Ω</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">Katoda (−)</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">GND</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>LED hijau</strong></td>
+<td style="text-align:left">Anoda (+)</td>
+<td style="text-align:center">22</td>
+<td style="text-align:center">GPIO25</td>
+<td style="text-align:left">Seri resistor 330 Ω</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">Katoda (−)</td>
+<td style="text-align:center">34</td>
+<td style="text-align:center">GND</td>
+<td style="text-align:left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Catatan keselamatan wiring</strong></p>
+<ul>
+<li>GPIO Raspberry Pi bekerja pada logika <strong>3,3 V dan tidak toleran 5 V</strong>. Modul LM393 yang disuplai 5 V dapat mengeluarkan 5 V pada pin DO. Suplai modul dari 3,3 V, atau gunakan pembagi tegangan/level shifter bila harus 5 V.</li>
+<li>Buzzer <em>bare</em> (tanpa modul transistor) dapat menarik arus melebihi batas aman GPIO. Gunakan modul buzzer atau transistor.</li>
+<li>Satu pin GPIO hanya boleh dipakai <strong>satu perangkat</strong>. Program akan berhenti dengan pesan <code>KONFLIK PIN</code> bila <code>Config</code> memuat pin ganda.</li>
+<li>Jika wiring fisik Anda berbeda dari tabel ini, <strong>ubah nomor pin di class <code>Config</code></strong>, bukan sebaliknya.</li>
+</ul>
+<h3>4.3 Polaritas Modul</h3>
+<p>Beberapa modul berperilaku kebalikan. Atur flag berikut di <code>Config</code> bila perlu (cek dengan <code>test_sensors.py</code>):</p>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">Flag</th>
+<th style="text-align:center">Default</th>
+<th style="text-align:left">Ubah ke <code>False</code> bila…</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>BUZZER_ACTIVE_HIGH</code></td>
+<td style="text-align:center"><code>True</code></td>
+<td style="text-align:left">Buzzer bunyi terus saat idle dan hening saat seharusnya bunyi (modul <em>low-level trigger</em>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>PIR_ACTIVE_HIGH</code></td>
+<td style="text-align:center"><code>True</code></td>
+<td style="text-align:left">Pin PIR LOW saat ada gerakan</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SOUND_ACTIVE_HIGH</code></td>
+<td style="text-align:center"><code>True</code></td>
+<td style="text-align:left">Pin suara idle HIGH dan turun LOW saat ada suara (banyak modul LM393)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2>5. Finite State Machine (FSM)</h2>
+<h3>5.1 Daftar Status dan Prioritas</h3>
+<p>Sistem selalu berada di <strong>tepat satu status</strong>, dipilih dari kondisi aktif dengan prioritas tertinggi (1 = tertinggi):</p>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:center">Prioritas</th>
+<th style="text-align:left">Status</th>
+<th style="text-align:left">Kondisi pemicu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:left"><code>CODE_BLUE</code></td>
+<td style="text-align:left">Perintah dari dashboard</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:left"><code>INACTIVITY_ALERT</code></td>
+<td style="text-align:left">Tidak ada gerak PIR ≥ 120 detik</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:left"><code>FEEDING_WAKE</code></td>
+<td style="text-align:left">Perintah &quot;Bangunkan Bayi&quot; dari dashboard</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:left"><code>THERMAL_HAZARD</code></td>
+<td style="text-align:left">Suhu ≥ 34,0 °C atau ≤ 31,0 °C</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:left"><code>HUMIDITY_HAZARD</code></td>
+<td style="text-align:left">Kelembapan ≥ 80 % atau ≤ 50 %</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:left"><code>SENSOR_FAULT</code></td>
+<td style="text-align:left">DHT11 tanpa data valid &gt; 10 detik</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:left"><code>CRYING_DISTRESS</code></td>
+<td style="text-align:left">Sensor suara aktif (ditahan 3 detik)</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:left"><code>IDLE_NORMAL</code></td>
+<td style="text-align:left">Tidak ada kondisi di atas</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Karena hanya satu status yang tampil di LED, dashboard juga menampilkan <strong>semua peringatan aktif</strong> sekaligus (chip <code>active_alerts</code>) dan memainkan alarm web sesuai flag masing-masing, sehingga bahaya suhu tidak &quot;tertutup&quot; oleh status berprioritas lebih tinggi.</p>
+<h3>5.2 Matriks Aksi</h3>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">Status</th>
+<th style="text-align:center">LED hijau</th>
+<th style="text-align:center">LED merah</th>
+<th style="text-align:center">Buzzer boks</th>
+<th style="text-align:left">Audio web (jika aktif)</th>
+<th style="text-align:left">Pemulihan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>IDLE_NORMAL</code></td>
+<td style="text-align:center">Menyala</td>
+<td style="text-align:center">Mati</td>
+<td style="text-align:center">Mati</td>
+<td style="text-align:left">Hening</td>
+<td style="text-align:left">–</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CRYING_DISTRESS</code></td>
+<td style="text-align:center">Mati</td>
+<td style="text-align:center">Kedip 0,15 s</td>
+<td style="text-align:center">Mati</td>
+<td style="text-align:left">Hening (notifikasi visual)</td>
+<td style="text-align:left">Otomatis setelah 3 s tanpa suara</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SENSOR_FAULT</code></td>
+<td style="text-align:center">Mati</td>
+<td style="text-align:center">Kedip 0,15 s</td>
+<td style="text-align:center">Mati</td>
+<td style="text-align:left">Hening (notifikasi visual)</td>
+<td style="text-align:left">Otomatis saat data DHT11 pulih</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HUMIDITY_HAZARD</code></td>
+<td style="text-align:center">Mati</td>
+<td style="text-align:center">Kedip 0,15 s</td>
+<td style="text-align:center"><strong>Mati</strong></td>
+<td style="text-align:left">650 Hz, tiap 2,5 s</td>
+<td style="text-align:left">Histeresis (55–75 %)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>THERMAL_HAZARD</code></td>
+<td style="text-align:center">Mati</td>
+<td style="text-align:center">Kedip 0,15 s</td>
+<td style="text-align:center"><strong>Mati</strong></td>
+<td style="text-align:left">750 Hz, tiap 2 s</td>
+<td style="text-align:left">Histeresis (32–33 °C)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>FEEDING_WAKE</code></td>
+<td style="text-align:center">Mati</td>
+<td style="text-align:center">Kedip 0,15 s</td>
+<td style="text-align:center"><strong>Bunyi</strong> 0,4 s / 0,4 s</td>
+<td style="text-align:left">Hening (banner saja)</td>
+<td style="text-align:left"><strong>Tombol fisik</strong></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>INACTIVITY_ALERT</code></td>
+<td style="text-align:center">Mati</td>
+<td style="text-align:center">Kedip 0,15 s</td>
+<td style="text-align:center"><strong>Bunyi</strong> 0,4 s / 0,4 s</td>
+<td style="text-align:left">950 Hz, tiap 2 s</td>
+<td style="text-align:left"><strong>Tombol fisik</strong></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CODE_BLUE</code></td>
+<td style="text-align:center">Mati</td>
+<td style="text-align:center">Kedip 0,1 s</td>
+<td style="text-align:center"><strong>Bunyi</strong> 0,1 s / 0,1 s</td>
+<td style="text-align:left">1200 Hz, tiap 0,7 s</td>
+<td style="text-align:left"><strong>Tombol fisik</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Tambahan di web: koneksi ke Pi terputus ≥ 3 polling gagal → banner &quot;KONEKSI TERPUTUS&quot; dan bunyi 450 Hz tiap 3 s (bila audio aktif).</p>
+<h3>5.3 Diagram Transisi</h3>
+<pre><code class="language-text">                         ┌───────────────────────┐
+              ┌─────────▶│      IDLE_NORMAL      │◀──────────────┐
+              │          │  hijau ON · merah OFF │               │
+              │          └───────────┬───────────┘               │
+              │                      │ kondisi terpenuhi         │ semua kondisi
+              │   ┌──────────────────┼───────────────────┐       │ padam
+              │   ▼                  ▼                   ▼       │
+   ┌────────────────────┐  ┌──────────────────┐  ┌─────────────────┐
+   │ THERMAL / HUMIDITY │  │ SENSOR_FAULT /   │  │ INACTIVITY_ALERT│
+   │ merah kedip, buzzer│  │ CRYING_DISTRESS  │  │ FEEDING_WAKE    │
+   │ HENING, audio web  │  │ merah kedip,     │  │ CODE_BLUE       │
+   │                    │  │ buzzer hening    │  │ merah kedip +   │
+   └─────────┬──────────┘  └────────┬─────────┘  │ BUZZER BUNYI    │
+             │ histeresis /          │ otomatis   └────────┬────────┘
+             │ data valid            │                     │ tombol fisik
+             └───────────────────────┴─────────────────────┘ ditahan ≥ 0,5 s
+</code></pre>
+<h3>5.4 Histeresis</h3>
+<p>Alarm menyala bila nilai berada di luar <code>[batas bawah, batas atas]</code>, tetapi baru padam setelah nilai kembali ke <strong>pita dalam</strong> (batas bawah + H hingga batas atas − H). Ini mencegah alarm berkedip saat nilai berfluktuasi di sekitar batas.</p>
+<pre><code class="language-python">@staticmethod
+def _band_alarm(active, value, low, high, hyst):
+    if not active:
+        return value &gt;= high or value &lt;= low
+    return not (low + hyst &lt;= value &lt;= high - hyst)
+</code></pre>
+<hr>
+<h2>6. Konfigurasi</h2>
+<p>Seluruh parameter ada di class <code>Config</code> pada <code>app.py</code>:</p>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">Parameter</th>
+<th style="text-align:center">Default</th>
+<th style="text-align:left">Keterangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>PIN_LED_MERAH</code> / <code>PIN_LED_HIJAU</code></td>
+<td style="text-align:center">24 / 25</td>
+<td style="text-align:left">Pin BCM LED</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>PIN_BUZZER</code></td>
+<td style="text-align:center">23</td>
+<td style="text-align:left">Pin BCM buzzer</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>PIN_TOMBOL</code></td>
+<td style="text-align:center">27</td>
+<td style="text-align:left">Pin BCM tombol</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>PIN_PIR</code> / <code>PIN_SOUND</code></td>
+<td style="text-align:center">17 / 22</td>
+<td style="text-align:left">Pin BCM sensor</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>PIN_DHT</code></td>
+<td style="text-align:center"><code>&quot;D4&quot;</code></td>
+<td style="text-align:left">Pin DHT11 (GPIO4)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>LOOP_INTERVAL</code></td>
+<td style="text-align:center">0,1 s</td>
+<td style="text-align:left">Periode loop engine</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>DHT_INTERVAL</code></td>
+<td style="text-align:center">2,0 s</td>
+<td style="text-align:left">Periode baca DHT11</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>DHT_STALE_AFTER</code></td>
+<td style="text-align:center">10 s</td>
+<td style="text-align:left">Batas tanpa data valid sebelum <code>SENSOR_FAULT</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>INACTIVITY_WARNING</code></td>
+<td style="text-align:center">90 s</td>
+<td style="text-align:left">Peringatan dini (bar kuning) di dashboard</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>INACTIVITY_TIMEOUT</code></td>
+<td style="text-align:center">120 s</td>
+<td style="text-align:left">Batas inaktivitas → buzzer boks</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>MOTION_DISPLAY_HOLD</code></td>
+<td style="text-align:center">3 s</td>
+<td style="text-align:left">Status &quot;AKTIF&quot; di web ditahan agar pulsa PIR singkat terlihat</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CRY_HOLD</code></td>
+<td style="text-align:center">3 s</td>
+<td style="text-align:left">Penahan status tangisan</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>MASK_SOUND_DURING_BUZZER</code></td>
+<td style="text-align:center"><code>True</code></td>
+<td style="text-align:left">Abaikan sensor suara saat buzzer boks berbunyi (cegah umpan balik)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>BUTTON_HOLD</code></td>
+<td style="text-align:center">0,5 s</td>
+<td style="text-align:left">Lama tahan tombol fisik</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HYSTERESIS</code> / <code>HUM_HYSTERESIS</code></td>
+<td style="text-align:center">1,0 °C / 5 %</td>
+<td style="text-align:left">Lebar histeresis</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>TEMP_DEFAULT_LOW/HIGH</code></td>
+<td style="text-align:center">31,0 / 34,0</td>
+<td style="text-align:left">Ambang suhu tetap</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HUM_DEFAULT_LOW/HIGH</code></td>
+<td style="text-align:center">50 / 80</td>
+<td style="text-align:left">Ambang kelembapan tetap</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>AUTH_TOKEN</code></td>
+<td style="text-align:center">dari env <code>INCUBATOR_TOKEN</code></td>
+<td style="text-align:left">Token opsional untuk API kontrol</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HOST</code> / <code>PORT</code></td>
+<td style="text-align:center"><code>0.0.0.0</code> / 5000</td>
+<td style="text-align:left">Alamat server</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Variabel lingkungan:</p>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">Variabel</th>
+<th style="text-align:left">Fungsi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>INCUBATOR_SIM=1</code></td>
+<td style="text-align:left">Mode simulasi tanpa hardware (sensor acak, aktuator tiruan)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>INCUBATOR_TOKEN=...</code></td>
+<td style="text-align:left">Mewajibkan header <code>X-Auth-Token</code> pada <code>POST /api/control</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2>7. Perangkat Lunak: Struktur dan Alur</h2>
+<h3>7.1 Struktur Folder</h3>
+<pre><code class="language-text">incubator-monitor/
+├── app.py                 # Backend: hardware engine + FSM + REST API
+├── test_sensors.py        # (opsional) skrip diagnosis wiring
+├── templates/
+│   └── index.html         # Dashboard web (HTML + CSS + JavaScript)
+└── venv/                  # (opsional) virtual environment Python
+</code></pre>
+<h3>7.2 Pembagian Modul dalam <code>app.py</code></h3>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">Bagian</th>
+<th style="text-align:left">Isi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>Config</code></td>
+<td style="text-align:left">Seluruh konstanta dan pin</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>State</code>, <code>BUZZER_STATES</code></td>
+<td style="text-align:left">Enum status FSM; himpunan status yang membunyikan buzzer</td>
+</tr>
+<tr>
+<td style="text-align:left">Lapisan hardware</td>
+<td style="text-align:left"><code>Hardware</code> (LED, Buzzer, Button, DigitalInputDevice, DHT11) dan kelas simulasi <code>_Sim*</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>_check_pin_conflicts()</code></td>
+<td style="text-align:left">Memeriksa pin ganda sebelum perangkat dibuat</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>IncubatorSentinel</code></td>
+<td style="text-align:left">Logika FSM, thread engine, callback GPIO, perintah kontrol, <code>snapshot()</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Flask</td>
+<td style="text-align:left">Route <code>/</code>, <code>/api/status</code>, <code>/api/control</code>, header no-cache, autentikasi token</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>main()</code></td>
+<td style="text-align:left">Menjalankan thread engine dan server, membersihkan GPIO saat keluar</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>7.3 Fungsi Kunci</h3>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">Fungsi</th>
+<th style="text-align:left">Tugas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>Hardware.apply_pattern(state)</code></td>
+<td style="text-align:left">Menetapkan LED dan buzzer sesuai status (hanya dipanggil saat status berganti)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>Hardware.read_dht()</code></td>
+<td style="text-align:left">Membaca DHT11, mengembalikan <code>None</code> bila gagal atau di luar rentang</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>IncubatorSentinel.run()</code></td>
+<td style="text-align:left">Loop engine: baca sensor → <code>_update_locked</code> → terapkan pola</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>_update_locked()</code></td>
+<td style="text-align:left">Telemetri, histeresis, timer inaktivitas, deteksi tangisan, resolusi status</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>_resolve_state()</code></td>
+<td style="text-align:left">Memilih status berprioritas tertinggi</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>_on_button_confirmed()</code></td>
+<td style="text-align:left">Callback tombol (ditahan): mereset buzzer dan timer inaktivitas</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>trigger_feeding_wake()</code> / <code>trigger_emergency()</code></td>
+<td style="text-align:left">Perintah dari web</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>snapshot()</code></td>
+<td style="text-align:left">Membuat data JSON status untuk dashboard</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>7.4 Alur Loop Engine</h3>
+<pre><code class="language-text">          ┌──────────────────────────────┐
+          │ MULAI iterasi (tiap 0,1 s)   │
+          └──────────────┬───────────────┘
+                         ▼
+          ┌──────────────────────────────┐
+          │ Waktunya baca DHT11 (2 s)?   │──ya──▶ baca suhu/RH
+          └──────────────┬───────────────┘
+                         ▼
+          ┌──────────────────────────────┐
+          │ Baca PIR dan sensor suara    │
+          └──────────────┬───────────────┘
+                         ▼
+   ┌─────────────────────────────────────────────┐
+   │ [LOCK] _update_locked:                      │
+   │  1. DHT valid? kalau &gt;10 s gagal → fault    │
+   │  2. Histeresis suhu &amp; kelembapan            │
+   │  3. PIR: update last_motion, hitung diam    │
+   │     diam ≥ 120 s → inactivity = True        │
+   │  4. Suara (diabaikan saat buzzer berbunyi)  │
+   │  5. _resolve_state() → state baru           │
+   └──────────────────────┬──────────────────────┘
+                          ▼
+          ┌──────────────────────────────┐
+          │ State berubah?               │──ya──▶ apply_pattern(state)
+          └──────────────┬───────────────┘
+                         ▼
+          ┌──────────────────────────────┐
+          │ Tombol baru dikonfirmasi?    │──ya──▶ chirp (bip pendek)
+          └──────────────┬───────────────┘
+                         ▼
+                  tunggu 0,1 s → ulangi
+</code></pre>
+<h3>7.5 Cuplikan Logika Inti</h3>
+<p><strong>Pola aktuator</strong></p>
+<pre><code class="language-python">def apply_pattern(self, state):
+    g, r, b = self.led_hijau, self.led_merah, self.buzzer
+    g.off(); r.off(); b.off()
+    if state is State.IDLE_NORMAL:
+        g.on()
+    elif state is State.EMERGENCY:
+        r.blink(on_time=0.1, off_time=0.1)
+        b.beep(on_time=0.1, off_time=0.1)
+    elif state in (State.INACTIVITY_ALERT, State.FEEDING_WAKE):
+        r.blink(on_time=0.15, off_time=0.15)
+        b.beep(on_time=0.4, off_time=0.4)
+    else:  # THERMAL, HUMIDITY, SENSOR_FAULT, CRYING
+        r.blink(on_time=0.15, off_time=0.15)
+</code></pre>
+<p><strong>Resolusi status</strong></p>
+<pre><code class="language-python">def _resolve_state(self):
+    if self.emergency:      return State.EMERGENCY
+    if self.inactivity:     return State.INACTIVITY_ALERT
+    if self.feeding_wake:   return State.FEEDING_WAKE
+    if self.thermal_alarm:  return State.THERMAL_HAZARD
+    if self.humidity_alarm: return State.HUMIDITY_HAZARD
+    if self.sensor_fault:   return State.SENSOR_FAULT
+    if self.cry_active:     return State.CRYING_DISTRESS
+    return State.IDLE_NORMAL
+</code></pre>
+<p><strong>Tombol fisik sebagai satu-satunya pemadam buzzer</strong></p>
+<pre><code class="language-python">def _on_button_confirmed(self):
+    with self.lock:
+        if self.inactivity or self.feeding_wake or self.emergency:
+            self.inactivity = self.feeding_wake = self.emergency = False
+            self.last_motion = time.monotonic()
+            self._chirp_requested = True
+            self.log(&#34;info&#34;, &#34;VERIFIKASI FISIK: Perawat hadir di lokasi...&#34;)
+</code></pre>
+<hr>
+<h2>8. REST API</h2>
+<p>Semua respons berformat JSON dengan header <code>Cache-Control: no-cache, no-store, must-revalidate</code>.</p>
+<h3>8.1 <code>GET /api/status</code></h3>
+<p>Mengembalikan snapshot sistem (tanpa autentikasi). Field utama:</p>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">Field</th>
+<th style="text-align:left">Tipe</th>
+<th style="text-align:left">Arti</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>state</code></td>
+<td style="text-align:left">string</td>
+<td style="text-align:left">Status FSM saat ini</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>active_alerts</code></td>
+<td style="text-align:left">array string</td>
+<td style="text-align:left">Semua peringatan aktif</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>temperature</code>, <code>humidity</code></td>
+<td style="text-align:left">number / null</td>
+<td style="text-align:left">Pembacaan terakhir</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>sensor_ok</code>, <code>sensor_age_seconds</code></td>
+<td style="text-align:left">bool, number</td>
+<td style="text-align:left">Kesehatan dan umur data DHT11</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>motion</code>, <code>pir_raw</code>, <code>motion_events</code></td>
+<td style="text-align:left">bool, bool, int</td>
+<td style="text-align:left">Gerak (ditahan 3 s), level pin PIR, jumlah deteksi</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>inactivity_seconds</code>, <code>last_motion_ago</code></td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">Lama tanpa gerak</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>crying</code>, <code>last_cry_ago</code></td>
+<td style="text-align:left">bool, int / null</td>
+<td style="text-align:left">Status tangisan, umur suara terakhir</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>thermal_alarm</code>, <code>humidity_alarm</code></td>
+<td style="text-align:left">bool</td>
+<td style="text-align:left">Alarm lingkungan</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>inactivity_alarm</code>, <code>feeding_wake</code>, <code>emergency</code></td>
+<td style="text-align:left">bool</td>
+<td style="text-align:left">Kondisi buzzer boks</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>temp_threshold_low/high</code>, <code>hum_threshold_low/high</code></td>
+<td style="text-align:left">number</td>
+<td style="text-align:left">Ambang (hanya baca)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>auth_required</code></td>
+<td style="text-align:left">bool</td>
+<td style="text-align:left">Apakah <code>POST /api/control</code> memerlukan token</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>config</code></td>
+<td style="text-align:left">object</td>
+<td style="text-align:left"><code>hysteresis</code>, <code>inactivity_warning</code>, <code>inactivity_timeout</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>simulation</code></td>
+<td style="text-align:left">bool</td>
+<td style="text-align:left">Mode simulasi aktif</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>logs</code></td>
+<td style="text-align:left">array</td>
+<td style="text-align:left">20 log terbaru (<code>time</code>, <code>level</code>, <code>msg</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>server_time</code></td>
+<td style="text-align:left">string</td>
+<td style="text-align:left">Waktu server (ISO 8601)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>8.2 <code>POST /api/control</code></h3>
+<p>Body JSON: <code>{&quot;action&quot;: &quot;&lt;nama&gt;&quot;}</code>. Bila <code>INCUBATOR_TOKEN</code> di-set, sertakan header <code>X-Auth-Token</code>.</p>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left"><code>action</code></th>
+<th style="text-align:left">Hasil</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>wake_baby</code></td>
+<td style="text-align:left">Mengaktifkan <code>FEEDING_WAKE</code> (buzzer boks bunyi). <code>409</code> bila buzzer sudah aktif atau CODE BLUE berjalan</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>emergency_alert</code></td>
+<td style="text-align:left">Mengaktifkan CODE BLUE. <code>409</code> bila sudah aktif</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>mute</code>, <code>unmute</code>, <code>stop_buzzer</code>, <code>clear_emergency</code></td>
+<td style="text-align:left"><strong>Ditolak <code>403</code></strong>: buzzer hanya dapat dimatikan via tombol fisik</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>update_thresholds</code>, <code>update_humidity_thresholds</code></td>
+<td style="text-align:left"><strong>Ditolak <code>403</code></strong>: ambang bersifat default tetap</td>
+</tr>
+<tr>
+<td style="text-align:left">lainnya</td>
+<td style="text-align:left"><code>400</code> aksi tidak dikenal</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Respons sukses: <code>{&quot;status&quot;: &quot;success&quot;, &quot;message&quot;: &quot;...&quot;, &quot;data&quot;: { ...snapshot... }}</code>.
+Kode galat: <code>400</code> (format/aksi salah), <code>401</code> (token salah), <code>403</code> (dilarang protokol), <code>409</code> (konflik status).</p>
+<hr>
+<h2>9. Antarmuka Web (Dashboard)</h2>
+<p>Satu halaman (<code>templates/index.html</code>) tanpa dependensi eksternal. Komponen:</p>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">Komponen</th>
+<th style="text-align:left">Isi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Header</strong></td>
+<td style="text-align:left">Judul, tombol <strong>Audio Monitor</strong> (MATI ⇄ AKTIF), indikator koneksi</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Banner status</strong></td>
+<td style="text-align:left">Nama status, penjelasan, dan chip semua peringatan aktif; berkedip saat alarm</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Kartu Suhu</strong></td>
+<td style="text-align:left">Nilai, batas aman, status sensor; merah bila alarm</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Kartu Kelembapan</strong></td>
+<td style="text-align:left">Nilai, batas aman, umur data</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Kartu Aktivitas (PIR)</strong></td>
+<td style="text-align:left">AKTIF/DIAM, bar inaktivitas (kuning ≥ 90 s, merah saat alarm), level pin PIR, jumlah deteksi</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Kartu Tangisan</strong></td>
+<td style="text-align:left">MENANGIS/TENANG, umur suara terakhir</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Panel Tindakan</strong></td>
+<td style="text-align:left">Tombol <em>Bangunkan Bayi</em> dan <em>Trigger Code Blue</em> (nonaktif selama buzzer aktif, berganti teks &quot;tekan tombol fisik&quot;)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Riwayat</strong></td>
+<td style="text-align:left">20 log kejadian terbaru</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Perilaku Audio Monitor (Web Audio API)</strong></p>
+<ul>
+<li>Browser mewajibkan interaksi pengguna sebelum audio, sehingga tombol harus diklik sekali.</li>
+<li>Bunyi hanya terjadi bila ada alarm: koneksi putus &gt; CODE BLUE &gt; inaktivitas &gt; suhu &gt; kelembapan (nada prioritas tertinggi saja). Berulang dengan jeda, berhenti otomatis saat alarm padam.</li>
+<li>Dapat dimatikan kapan saja dengan klik tombol yang sama.</li>
+<li>Jadwal susu dan tangisan hanya notifikasi visual.</li>
+<li><strong>Keterbatasan:</strong> halaman harus terbuka dan perangkat tidak terkunci/tertidur. Peramban dapat membatasi tab latar belakang.</li>
+</ul>
+<p><strong>Token:</strong> jika <code>auth_required</code> bernilai true, dashboard meminta token sekali (disimpan di <code>sessionStorage</code> tab).</p>
+<hr>
+<h2>10. Instalasi dan Menjalankan</h2>
+<h3>10.1 Persiapan Raspberry Pi OS</h3>
+<pre><code class="language-bash">sudo apt update
+sudo apt install -y python3-venv python3-pip python3-lgpio libgpiod2
+</code></pre>
+<h3>10.2 Virtual Environment dan Dependensi</h3>
+<p>Raspberry Pi OS (Bookworm ke atas) menolak <code>pip install</code> global, jadi gunakan venv. Opsi <code>--system-site-packages</code> memudahkan akses <code>lgpio</code> bawaan sistem.</p>
+<pre><code class="language-bash">cd ~/Documents/incubator-monitor
+python3 -m venv venv --system-site-packages
+source venv/bin/activate
+pip install flask gpiozero adafruit-circuitpython-dht
+</code></pre>
+<h3>10.3 Menjalankan</h3>
+<pre><code class="language-bash"># Mode normal (hardware terpasang)
+python3 app.py
+
+# Dengan token autentikasi
+export INCUBATOR_TOKEN=&#34;rahasia&#34;
+python3 app.py
+
+# Mode simulasi (tanpa hardware, untuk uji logika/antarmuka)
+INCUBATOR_SIM=1 python3 app.py
+</code></pre>
+<p>Buka dari perangkat perawat (satu jaringan Wi-Fi): <code>http://&lt;IP_PI&gt;:5000</code>. Cari IP dengan <code>hostname -I</code>. Setelah mengganti <code>index.html</code>, muat ulang dengan <strong>Ctrl+Shift+R</strong>.</p>
+<p>Hentikan program dengan <strong>Ctrl+C</strong>; GPIO dibersihkan otomatis.</p>
+<h3>10.4 (Opsional) Jalan Otomatis saat Boot</h3>
+<p>Berkas <code>/etc/systemd/system/sentinel.service</code>:</p>
+<pre><code class="language-ini">[Unit]
+Description=Incubator Sentinel
+After=network-online.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/Documents/incubator-monitor
+Environment=INCUBATOR_TOKEN=rahasia
+ExecStart=/home/pi/Documents/incubator-monitor/venv/bin/python3 app.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<pre><code class="language-bash">sudo systemctl daemon-reload &amp;&amp; sudo systemctl enable --now sentinel
+</code></pre>
+<hr>
+<h2>11. Pengujian dan Diagnosis</h2>
+<h3>11.1 Skrip Diagnosis <code>test_sensors.py</code></h3>
+<p>Skrip terpisah (bukan bagian sistem) untuk memastikan wiring benar. <strong>Hentikan <code>app.py</code> dahulu</strong> karena satu pin GPIO tidak bisa dipakai dua program.</p>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">Perintah</th>
+<th style="text-align:left">Fungsi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>python3 test_sensors.py leds</code></td>
+<td style="text-align:left">Mengedipkan LED hijau lalu merah</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>python3 test_sensors.py buzzer</code></td>
+<td style="text-align:left">Membunyikan buzzer 3× untuk memeriksa polaritas</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>python3 test_sensors.py inputs</code></td>
+<td style="text-align:left">Menampilkan level mentah PIR, suara, tombol selama 30 detik</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>python3 test_sensors.py dht</code></td>
+<td style="text-align:left">Membaca DHT11 5×</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>11.2 Skenario Uji Fungsional</h3>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">No</th>
+<th style="text-align:left">Skenario</th>
+<th style="text-align:left">Langkah</th>
+<th style="text-align:left">Hasil yang diharapkan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">Kondisi normal</td>
+<td style="text-align:left">Jalankan dengan suhu/RH di dalam batas, ada gerak</td>
+<td style="text-align:left">LED hijau menyala tetap; banner NORMAL; Audio hening</td>
+</tr>
+<tr>
+<td style="text-align:left">2</td>
+<td style="text-align:left">Suhu tinggi</td>
+<td style="text-align:left">Hangatkan DHT11 hingga ≥ 34 °C</td>
+<td style="text-align:left">LED merah kedip, <strong>buzzer hening</strong>; banner BAHAYA TERMAL; web bunyi 750 Hz (bila audio aktif); padam setelah ≤ 33 °C</td>
+</tr>
+<tr>
+<td style="text-align:left">3</td>
+<td style="text-align:left">Suhu rendah</td>
+<td style="text-align:left">Suhu ≤ 31 °C (mis. suhu ruang)</td>
+<td style="text-align:left">Perilaku sama dengan skenario 2</td>
+</tr>
+<tr>
+<td style="text-align:left">4</td>
+<td style="text-align:left">Kelembapan tinggi</td>
+<td style="text-align:left">Hembuskan napas ke sensor hingga RH ≥ 80 %</td>
+<td style="text-align:left">LED merah kedip, buzzer hening; web bunyi 650 Hz; padam setelah ≤ 75 %</td>
+</tr>
+<tr>
+<td style="text-align:left">5</td>
+<td style="text-align:left">Inaktivitas</td>
+<td style="text-align:left">Tutup PIR 120 detik (atau kecilkan <code>INACTIVITY_TIMEOUT</code> sementara)</td>
+<td style="text-align:left">Buzzer boks bunyi ritmis, LED merah kedip, web 950 Hz</td>
+</tr>
+<tr>
+<td style="text-align:left">6</td>
+<td style="text-align:left">Tombol fisik</td>
+<td style="text-align:left">Tahan tombol ≥ 0,5 detik saat buzzer bunyi</td>
+<td style="text-align:left">Buzzer berhenti, bip konfirmasi, log &quot;VERIFIKASI FISIK&quot;</td>
+</tr>
+<tr>
+<td style="text-align:left">7</td>
+<td style="text-align:left">Tekan tombol singkat</td>
+<td style="text-align:left">Tekan &lt; 0,5 detik saat buzzer bunyi</td>
+<td style="text-align:left">Buzzer <strong>tetap bunyi</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">8</td>
+<td style="text-align:left">Bangunkan bayi</td>
+<td style="text-align:left">Klik tombol di web</td>
+<td style="text-align:left">Buzzer boks bunyi; tombol web berubah nonaktif; hanya mati via tombol fisik</td>
+</tr>
+<tr>
+<td style="text-align:left">9</td>
+<td style="text-align:left">Mute dari web</td>
+<td style="text-align:left">Kirim <code>action: mute</code> atau <code>clear_emergency</code> ke API</td>
+<td style="text-align:left">Respons <code>403</code>; buzzer tetap bunyi</td>
+</tr>
+<tr>
+<td style="text-align:left">10</td>
+<td style="text-align:left">CODE BLUE</td>
+<td style="text-align:left">Klik tombol di web</td>
+<td style="text-align:left">Buzzer cepat, LED kedip cepat, web 1200 Hz; mati hanya via tombol fisik</td>
+</tr>
+<tr>
+<td style="text-align:left">11</td>
+<td style="text-align:left">Tangisan</td>
+<td style="text-align:left">Tepuk tangan/suara keras di dekat sensor</td>
+<td style="text-align:left">Kartu &quot;MENANGIS&quot; 3 detik; LED merah kedip; buzzer hening</td>
+</tr>
+<tr>
+<td style="text-align:left">12</td>
+<td style="text-align:left">Gangguan sensor</td>
+<td style="text-align:left">Cabut kabel DATA DHT11 &gt; 10 detik</td>
+<td style="text-align:left">Status SENSOR_FAULT; LED merah kedip</td>
+</tr>
+<tr>
+<td style="text-align:left">13</td>
+<td style="text-align:left">Koneksi putus</td>
+<td style="text-align:left">Matikan Wi-Fi perangkat atau hentikan <code>app.py</code></td>
+<td style="text-align:left">Banner KONEKSI TERPUTUS; web bunyi 450 Hz</td>
+</tr>
+<tr>
+<td style="text-align:left">14</td>
+<td style="text-align:left">Audio Monitor</td>
+<td style="text-align:left">Klik tombol audio dua kali</td>
+<td style="text-align:left">Berganti AKTIF/MATI; bunyi berhenti saat MATI</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>11.3 Pengujian Simulasi</h3>
+<p>Dengan <code>INCUBATOR_SIM=1</code>, logika FSM (histeresis, timer inaktivitas, prioritas status, penolakan perintah mute, autentikasi token, pola aktuator) dapat diuji otomatis tanpa hardware dengan memanggil <code>IncubatorSentinel._update_locked()</code> dan Flask test client. Simulasi hanya memverifikasi logika, <strong>bukan</strong> wiring atau perilaku sensor fisik.</p>
+<hr>
+<h2>12. Troubleshooting</h2>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">Gejala</th>
+<th style="text-align:left">Kemungkinan penyebab</th>
+<th style="text-align:left">Solusi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>KONFLIK PIN di class Config…</code></td>
+<td style="text-align:left">Dua perangkat diberi pin BCM yang sama</td>
+<td style="text-align:left">Perbaiki nomor pin di <code>Config</code> agar unik dan cocok dengan wiring</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>GPIOPinInUse</code></td>
+<td style="text-align:left">Pin dipakai dua objek, atau program lain (mis. <code>test_sensors.py</code>, instans <code>app.py</code> lama) masih berjalan</td>
+<td style="text-align:left">Hentikan proses lain (<code>pkill -f app.py</code>); pastikan pin unik</td>
+</tr>
+<tr>
+<td style="text-align:left">Dashboard tertahan di &quot;MEMUAT…&quot;</td>
+<td style="text-align:left"><code>index.html</code> lama/rusak atau cache</td>
+<td style="text-align:left">Pakai <code>index.html</code> versi terbaru; Ctrl+Shift+R; periksa konsol browser (F12)</td>
+</tr>
+<tr>
+<td style="text-align:left">PIR tidak terdeteksi</td>
+<td style="text-align:left">Wiring, pemanasan, potensiometer</td>
+<td style="text-align:left">Lihat kartu PIR: jika &quot;Pin PIR&quot; tetap LOW saat melambai, periksa OUT→GPIO17, VCC 5 V, GND; tunggu 30–60 s; jalankan <code>test_sensors.py inputs</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Status gerak tidak berubah</td>
+<td style="text-align:left">Mode <em>retrigger</em>/delay PIR panjang</td>
+<td style="text-align:left">Atur potensiometer delay; kartu menahan &quot;AKTIF&quot; 3 s</td>
+</tr>
+<tr>
+<td style="text-align:left">&quot;MENANGIS&quot; terus / tidak pernah</td>
+<td style="text-align:left">Polaritas atau sensitivitas modul suara</td>
+<td style="text-align:left">Ubah <code>SOUND_ACTIVE_HIGH</code>; putar potensiometer sensitivitas</td>
+</tr>
+<tr>
+<td style="text-align:left">Buzzer bunyi terus saat idle</td>
+<td style="text-align:left">Modul <em>low-level trigger</em></td>
+<td style="text-align:left">Set <code>BUZZER_ACTIVE_HIGH = False</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Buzzer tidak bunyi sama sekali</td>
+<td style="text-align:left">Wiring, daya, atau polaritas</td>
+<td style="text-align:left"><code>python3 test_sensors.py buzzer</code>; cek VCC dan GND</td>
+</tr>
+<tr>
+<td style="text-align:left">Alarm suhu rendah menyala terus</td>
+<td style="text-align:left">Suhu ruang &lt; 31 °C</td>
+<td style="text-align:left">Wajar untuk default; saat demo, hangatkan sensor atau ubah sementara <code>TEMP_DEFAULT_LOW</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SENSOR_FAULT</code> terus</td>
+<td style="text-align:left">DHT11 pada Pi 5 sensitif pewaktuan; kabel/pull-up</td>
+<td style="text-align:left">Periksa wiring dan pull-up; coba ulang; pertimbangkan sensor lain (DS18B20/SHT31)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>error: externally-managed-environment</code></td>
+<td style="text-align:left"><code>pip install</code> global ditolak</td>
+<td style="text-align:left">Gunakan venv (bagian 10.2)</td>
+</tr>
+<tr>
+<td style="text-align:left">Audio web tidak berbunyi</td>
+<td style="text-align:left">Belum diklik tombol Audio Monitor, tab di-<em>background</em>, perangkat dikunci</td>
+<td style="text-align:left">Aktifkan audio; biarkan layar menyala dan tab aktif</td>
+</tr>
+<tr>
+<td style="text-align:left">Dashboard tidak bisa dibuka dari HP</td>
+<td style="text-align:left">Beda jaringan/firewall</td>
+<td style="text-align:left">Samakan Wi-Fi; periksa IP dengan <code>hostname -I</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2>13. Keterbatasan dan Catatan Keselamatan</h2>
+<ol>
+<li><strong>Bukan perangkat medis.</strong> Tidak memenuhi standar seperti IEC 60601-1-8 (sistem alarm) dan IEC 60601-2-19 (inkubator bayi). Jangan dipakai pada pasien nyata.</li>
+<li><strong>PIR tidak mengukur napas.</strong> Diam tidak sama dengan apnea. Untuk deteksi pernapasan diperlukan sensor lain (mis. piezo, radar, pulse oximeter).</li>
+<li><strong>DHT11 kurang presisi</strong> (±2 °C, ±5 % RH, resolusi 1 satuan). Untuk aplikasi serius gunakan DS18B20 atau SHT31.</li>
+<li><strong>Sensor suara digital tidak mengenali tangisan</strong>, hanya suara melampaui ambang (tepukan dan pintu juga terdeteksi). Pengenalan tangisan memerlukan analisis frekuensi/ML.</li>
+<li><strong>Alarm bergantung pada browser.</strong> Jika perangkat perawat tertidur atau halaman tertutup, alarm suhu/kelembapan hanya terlihat dari LED di boks. Notifikasi push eksternal dapat menjadi pengembangan lanjutan.</li>
+<li><strong>Kompromi desain:</strong> membungkam alarm audio lokal untuk suhu bertentangan dengan praktik standar alarm medis yang mewajibkan penanda audible. Keputusan ini sengaja diambil demi perlindungan pendengaran bayi dan harus dibahas sebagai <em>trade-off</em>.</li>
+<li><strong>Keamanan jaringan:</strong> tanpa <code>INCUBATOR_TOKEN</code>, siapa pun di jaringan yang sama dapat memicu <em>Bangunkan Bayi</em> atau CODE BLUE. Gunakan token dan jaringan tertutup. Server Flask bawaan bukan server produksi (tanpa HTTPS).</li>
+<li><strong>Raspberry Pi bukan sistem waktu-nyata keras.</strong> Penjadwalan Linux tidak menjamin tenggat waktu pasti.</li>
+<li><strong>Jika Pi mati atau hang, semua indikator mati.</strong> Watchdog perangkat keras dan catu daya cadangan belum ada.</li>
+</ol>
+<hr>
+<h2>14. Riwayat Perubahan</h2>
+<div class="md-table" role="region" aria-label="Table" tabindex="0"><table>
+<thead>
+<tr>
+<th style="text-align:left">Versi</th>
+<th style="text-align:left">Perubahan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>1.0</strong></td>
+<td style="text-align:left">Rancangan awal: thermal hazard, deteksi &quot;apnea&quot; via PIR, buzzer boks hanya dimatikan tombol, ambang suhu dapat diubah dari web.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>2.0</strong></td>
+<td style="text-align:left">• Istilah &quot;apnea&quot; diganti <strong>inaktivitas</strong> (<code>INACTIVITY_ALERT</code>). • Ditambah alarm <strong>kelembapan</strong> dengan histeresis. • Status <code>FEEDING_WAKE</code> terpisah dari inaktivitas. • Ambang suhu/kelembapan dikunci default; menu pengaturan dihapus dan API menolak (403). • <strong>Audio Monitor</strong> dapat dinyalakan/dimatikan dan berbunyi berjeda hanya saat alarm. • PIR dibaca sebagai input digital biasa; status &quot;AKTIF&quot; ditahan 3 s; ditambah diagnosis pin mentah dan jumlah deteksi. • Pola LED baru (hijau tetap saat aman; merah kedip cepat saat peringatan). • Tombol fisik harus ditahan 0,5 s; CODE BLUE hanya dimatikan via tombol fisik. • Sensor suara diabaikan saat buzzer berbunyi. • Token autentikasi opsional. • Header no-cache global. • Pemeriksaan konflik pin saat startup. • Flag polaritas modul (<code>*_ACTIVE_HIGH</code>). • Skrip diagnosis <code>test_sensors.py</code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</body></html>
